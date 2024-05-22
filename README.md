@@ -2,7 +2,9 @@
 
 ## 環境設定
 仮想環境を設定しておくことを推奨。  
-`python3 -m pip install requirements.txt`
+```
+python3 -m pip install requirements.txt
+```
 
 配信アーカイブを入れておくディレクトリを作る（**必ず必要**）  
 `mkdir ./{archive}`  
@@ -10,10 +12,14 @@
 
 ## 実行方法
 
-`python CreateCorpus.py`
+```
+python CreateCorpus.py
+```
 
 デバック時  
-`python CreateCorpus.py --debug`
+```
+python CreateCorpus.py --debug
+```
 
 その他オプション  
 `--pitch_threshold`：設定する閾値以上のピッチの音声を抽出する（デフォルト：350）  
@@ -30,10 +36,14 @@ youtube-dl：YoutubeやTwitchの動画をダウンロード出来るライブラ
 [youtube-dl -公式-](https://github.com/ytdl-org/youtube-dl/)  
 
 #### Instal
-`brew install youtube-dl`
+```
+brew install youtube-dl
+```
 
 #### How to Use
-`youtube-dl 'URL' -x --audio-format wav`
+```
+youtube-dl 'URL' -x --audio-format wav
+```
 
 
 #### Config File の設定
