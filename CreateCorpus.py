@@ -1,11 +1,11 @@
-import Setting
-import fanctions
-import Setting
-import log
+from module.Setting import clear_directory
+from module.fanctions import Delete_BGM,Separate_Audio,Select_Audio,make_script
+from module.log import setup_logging
 
 import argparse
 import whisper # whisperのライブラリ
 import gc
+import os
 
 # 引数の設定
 def parse_args():
@@ -36,7 +36,7 @@ def Specifying_Arguments(DEBUG):
 
 def main():
     # ログ設定を読み込む
-    logger = log.setup_logging('main')
+    logger = setup_logging('main')
     args = parse_args()
     DEBUG = args.debug
     pitch_threshold = args.pitch_threshold
@@ -47,21 +47,25 @@ def main():
     if DEBUG:
         source_audio_dir = source_audio_dir + "_test"
         result_dir = result_dir + "_test"
-        json_file = json_file + "_test"
+        # 新しいファイル名を作成
+        base, ext = os.path.splitext(json_file)
+        new_filename = f"{base}_text{ext}"
+        # ファイル名を変更
+        os.rename(json_file, new_filename)
 
 
     logger.info(f"Stage 1 <<< BGM除去 >>> ")
-    fanctions.Delete_BGM(source_audio_dir, "./demucs", json_file)
+    Delete_BGM(source_audio_dir, "./demucs", json_file)
 
     logger.info(f"Stage 2 <<< 発話分割 >>> ")
-    fanctions.Separate_Audio("./demucs", "./Separate")
+    Separate_Audio("./demucs", "./Separate")
 
     logger.info(f"Stage 3 <<< 音声選択（高ピッチのみ） >>> ")
-    fanctions.Select_Audio("./Separate", "./high-pitch", pitch_threshold)
+    Select_Audio("./Separate", "./high-pitch", pitch_threshold)
 
     logger.info(f"Stage 4 <<< 文字起こし >>> ")
     model = whisper.load_model("large-v2")  # ここで 'tiny', 'base', 'small', 'medium', 'large' のいずれかを選べます
-    fanctions.make_script("./high-pitch", result_dir, model, json_file)
+    make_script("./high-pitch", result_dir, model, json_file)
 
     # 利用するディレクトリのリスト
     directories_to_clear = [
@@ -72,7 +76,7 @@ def main():
 
     # 各ディレクトリに対して削除処理を実行
     for directory in directories_to_clear:
-        Setting.clear_directory(directory)
+        clear_directory(directory)
 
     # モデルに対する参照を削除
     del model
